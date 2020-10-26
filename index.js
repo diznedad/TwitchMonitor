@@ -82,6 +82,9 @@ client.on('message', message => {
   // Whitespace or blank message
   if (!txtLower.length) return;
 
+  // Not a command
+  if(txtLower.charAt(0) !== prefix) return;
+
   let now = Date.now();
 
   // Only admins can run commands
@@ -127,37 +130,17 @@ class StreamActivity {
     }
 
     /**
-     * Fetches the channel that went online most recently, and is still currently online.
-     */
-    static getMostRecentStreamInfo() {
-        let lastChannel = null;
-        for (let channelName in this.onlineChannels) {
-            if (typeof channelName !== "undefined" && channelName) {
-                lastChannel = this.onlineChannels[channelName];
-            }
-        }
-        return lastChannel;
-    }
-
-    /**
      * Updates the user activity on Discord.
      * Either clears the activity if no channels are online, or sets it to "watching" if a stream is up.
      */
     static updateActivity() {
-        let streamInfo = this.getMostRecentStreamInfo();
+        let numStreams = Object.keys(this.onlineChannels).length;
+        let activity = `${numStreams} stream${numStreams == 1 ? "" : "s"}`;
+        this.discordClient.user.setActivity(activity, {
+            "type": "WATCHING"
+        });
 
-        if (streamInfo) {
-            this.discordClient.user.setActivity(streamInfo.user_name, {
-                "url": `https://twitch.tv/${streamInfo.user_name.toLowerCase()}`,
-                "type": "STREAMING"
-            });
-
-            console.log('[StreamActivity]', `Update current activity: watching ${streamInfo.user_name}.`);
-        } else {
-            console.log('[StreamActivity]', 'Cleared current activity.');
-
-            this.discordClient.user.setActivity(null);
-        }
+        console.log('[StreamActivity]', `Update current activity: watching ${activity}.`);
     }
 
     static init(discordClient) {

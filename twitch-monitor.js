@@ -21,35 +21,43 @@ class TwitchMonitor {
     }
 
     static start() {
-        // Load channel names from db
-        this.channelNames = this._watchData['usernames'] || [ ];
+      // Refresh channel list
+      this.loadChannels();
 
-        if (!this.channelNames.length) {
-            console.warn('[TwitchMonitor]', 'No channels configured');
-            return;
-        }
+      // Configure polling interval
+      let checkIntervalMs = parseInt(process.env.TWITCH_CHECK_INTERVAL_MS);
+      if (isNaN(checkIntervalMs) || checkIntervalMs < TwitchMonitor.MIN_POLL_INTERVAL_MS) {
+          // Enforce minimum poll interval to help avoid rate limits
+          checkIntervalMs = TwitchMonitor.MIN_POLL_INTERVAL_MS;
+      }
+      setInterval(() => {
+          this.refresh("Periodic refresh");
+      }, checkIntervalMs + 1000);
 
-        // Configure polling interval
-        let checkIntervalMs = parseInt(process.env.TWITCH_CHECK_INTERVAL_MS);
-        if (isNaN(checkIntervalMs) || checkIntervalMs < TwitchMonitor.MIN_POLL_INTERVAL_MS) {
-            // Enforce minimum poll interval to help avoid rate limits
-            checkIntervalMs = TwitchMonitor.MIN_POLL_INTERVAL_MS;
-        }
-        setInterval(() => {
-            this.refresh("Periodic refresh");
-        }, checkIntervalMs + 1000);
+      // Immediate refresh after startup
+      setTimeout(() => {
+          this.refresh("Initial refresh after start-up");
+      }, 1000);
 
-        // Immediate refresh after startup
-        setTimeout(() => {
-            this.refresh("Initial refresh after start-up");
-        }, 1000);
+      // Ready!
+      console.log('[TwitchMonitor]', `Configured stream status polling for channels:`, this.channelNames.join(', '),
+        `(${checkIntervalMs}ms interval)`);
+    }
 
-        // Ready!
-        console.log('[TwitchMonitor]', `Configured stream status polling for channels:`, this.channelNames.join(', '),
-          `(${checkIntervalMs}ms interval)`);
+    static loadChannels() {
+      // Load channel names from db
+      this.channelNames = this._watchData['usernames'] || [ ];
+
+      if (!this.channelNames.length) {
+          console.warn('[TwitchMonitor]', 'No channels configured');
+          return;
+      }
     }
 
     static refresh(reason) {
+        // Refresh channel list
+        this.loadChannels();
+
         const now = moment();
         console.log('[Twitch]', ' ▪ ▪ ▪ ▪ ▪ ', `Refreshing now (${reason ? reason : "No reason"})`, ' ▪ ▪ ▪ ▪ ▪ ');
 

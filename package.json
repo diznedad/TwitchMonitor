@@ -14,5 +14,8 @@
     "discord.js": "^12.4.1",
     "humanize-duration": "^3.24.0",
     "moment": "^2.29.1"
+  },
+  "engines": {
+    "node": ">=12"
   }
 }

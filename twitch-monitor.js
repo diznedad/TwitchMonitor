@@ -14,17 +14,15 @@ class TwitchMonitor {
         this._pendingGameRefresh = false;
         this._gameData = this._gameDb.get("game-list") || { };
         this._watchingGameIds = [];
+
+        
+        this._watchData = this._userDb.get("watch-list") || { };
     }
 
     static start() {
-        // Load channel names from config
-        this.channelNames = [];
-        process.env.TWITCH_CHANNELS.split(',').forEach((channelName) => {
-            if (channelName) {
-                // Remove spaces using trim
-                this.channelNames.push(channelName.trim().toLowerCase());
-            }
-        });
+        // Load channel names from db
+        this.channelNames = this._watchData['usernames'] || [ ];
+
         if (!this.channelNames.length) {
             console.warn('[TwitchMonitor]', 'No channels configured');
             return;

@@ -1,4 +1,3 @@
-// Taken from https://github.com/roydejong/timbot
 const axios = require('axios');
 
 /**

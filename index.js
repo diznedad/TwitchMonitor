@@ -1,5 +1,6 @@
 const axios = require('axios');
 const fs = require('fs');
+const Dotenv = require('dotenv').config();
 
 const Discord = require('discord.js');
 const client = new Discord.Client();

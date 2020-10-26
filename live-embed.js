@@ -1,3 +1,4 @@
+const Dotenv = require('dotenv').config();
 const Discord = require('discord.js');
 const moment = require('moment');
 const humanizeDuration = require("humanize-duration");

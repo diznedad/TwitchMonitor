@@ -1,3 +1,4 @@
+const Dotenv = require('dotenv').config();
 const TwitchApi = require('./twitch-api');
 const MiniDb = require('./minidb');
 const moment = require('moment');

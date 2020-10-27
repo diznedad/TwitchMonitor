@@ -17,7 +17,7 @@ class RemStreamer {
 
       // Remove the '@' symbol if it exists.
       if(userToDelete.charAt(0) === '@') {
-        userToAdd = userToAdd.substring(1);
+        userToDelete = userToDelete.substring(1);
       }
 
       // Whitespace or blank message

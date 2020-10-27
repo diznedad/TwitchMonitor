@@ -3,6 +3,9 @@
 
 Much of the code (and like 100% of the installation instructions below) was used from [Timbot](https://github.com/roydejong/timbot)
 
+### Feeling generous?
+[![Buy me a Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/brofar)
+
 ## Features
 * Monitors Twitch streamers and posts on discord when they're live.
 * Updates streamer card in the channel with uptime/game changes.

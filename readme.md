@@ -1,7 +1,7 @@
 # Twitch Monitor
-🤖 **A simple Discord bot that maintains a list of live Twitch streams in a channel.**
+🤖 **A simple Discord bot that maintains a list of live Twitch streams in a Discord channel.**
 
-Much of the code (and like 100% of the installation instructions below) was used from [Timbot](https://github.com/roydejong/timbot)
+Much of the code (and like 100% of the installation instructions below) was used from [Timbot](https://github.com/roydejong/timbot). I removed extraneous features, added the ability to dynamically add/remove watched streamers, and made it delete cards when streamers go offline.
 
 ### Feeling generous?
 [![Buy me a Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/brofar)

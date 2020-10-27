@@ -34,12 +34,13 @@ Configuration options explained:
 
 |Key|Required?|Description|
 |---|---------|-----------|
-|`discord_announce_channel`|☑|Channel name to post stream announcements in. Make sure the bot has permissions to post here.|
-|`discord_bot_token`|☑|Your bot token, via Discord developer portal (explained below).|
-|`twitch_client_id`|☑|Client ID for your Twitch app, via developer portal (explained below).|
-|`twitch_oauth_token`|☑|OAuth token that grants access to your Twitch app, via `id.twitch.tv` as explained below.|
-|`twitch_check_interval_ms`| |How often to poll the Twitch API and send or update live embeds.|
-|`twitch_use_boxart`| |If true, use alternate Live Embed style that includes game boxart as a thumbnail image if available.|
+|`DISCORD_ANNOUNCE_CHANNEL`|☑|Channel name to post stream announcements in. Make sure the bot has permissions to post here.|
+|`DISCORD_BOT_TOKEN`|☑|Your bot token, via Discord developer portal (explained below).|
+|`TWITCH_CLIENT_ID`|☑|Client ID for your Twitch app, via developer portal (explained below).|
+|`TWITCH_OAUTH_TOKEN`|☑|OAuth token that grants access to your Twitch app, via `id.twitch.tv` as explained below.|
+|`DISCORD_PREFIX`|☑|Prefix for the bot's commands.|
+|`TWITCH_CHECK_INTERVAL_MS`| |How often to poll the Twitch API and send or update live embeds.|
+|`TWITCH_USE_BOXART`| |If true, use alternate Live Embed style that includes game boxart as a thumbnail image if available.|
 
 ### Getting required tokens
 

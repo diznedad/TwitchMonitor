@@ -40,8 +40,7 @@ class TwitchMonitor {
       }, 1000);
 
       // Ready!
-      console.log('[TwitchMonitor]', `Configured stream status polling for channels:`, this.channelNames.join(', '),
-        `(${checkIntervalMs}ms interval)`);
+      console.log('[TwitchMonitor]', `${checkIntervalMs}ms refresh interval`);
     }
 
     static loadChannels() {
@@ -50,6 +49,8 @@ class TwitchMonitor {
 
       // Load channel names from db
       this.channelNames = this._watchData['usernames'] || [ ];
+
+      console.log('[TwitchMonitor]', `Polling channels:`, this.channelNames.join(', '));
 
       if (!this.channelNames.length) {
           console.warn('[TwitchMonitor]', 'No channels configured');

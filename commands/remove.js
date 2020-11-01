@@ -1,6 +1,8 @@
 const MiniDb = require('../minidb');
 const Discord = require('discord.js');
 
+// TODO: Remove streamer's card if they're currently live when we remove them.
+
 class RemStreamer {
 	static execute(message, args) {
 

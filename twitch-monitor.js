@@ -45,6 +45,9 @@ class TwitchMonitor {
     }
 
     static loadChannels() {
+      // Reload the file
+      this._watchData = this._userDb.get("watch-list") || { };
+
       // Load channel names from db
       this.channelNames = this._watchData['usernames'] || [ ];
 

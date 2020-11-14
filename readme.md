@@ -12,6 +12,11 @@ Much of the code (and like 100% of the installation instructions below) was used
 * Deletes streamer card from channel when streamer goes offline.
 * Discord commands to add/remove/list watched streamers (!addstreamer/!removestreamer/!liststramers).
 
+## To Do
+* Multi-server support
+* Change bot options via commmands (set channel, box art bool, screenshot bool, etc)
+* Bot icon
+
 ## Installation and setup
 
 ### Prerequisites

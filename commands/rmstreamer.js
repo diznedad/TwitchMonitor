@@ -1,9 +1,19 @@
 const MiniDb = require('../minidb');
 const Discord = require('discord.js');
+const prefix = process.env.DISCORD_PREFIX;
 
 // TODO: Remove streamer's card if they're currently live when we remove them.
 
-class RemStreamer {
+class RmStreamer {
+  
+  static category() {
+    return "Twitch";
+  }
+
+  static helptext() {
+    return `Removes a Twitch streamer from the watch list. You can specify multiple space-separated Twitch handles for quick removal. Usage: \`\`${prefix}${this.name.toString().trim().toLowerCase()} twitchhandle1\`\` or \`\`${prefix}${this.name.toString().trim().toLowerCase()} twitchhandle1 twitchhandle2\`\`.`;
+  }
+  
 	static execute(message, args) {
 
     this._userDb = new MiniDb("twitch-users");
@@ -64,4 +74,4 @@ class RemStreamer {
 	}
 }
 
-module.exports = RemStreamer;
+module.exports = RmStreamer;

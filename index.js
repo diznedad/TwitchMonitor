@@ -60,10 +60,10 @@ client.on('ready', () => {
 
 // Added to a new server
 client.on("guildCreate", guild => {
-  console.log(`[Discord]`,`[New Guild]`, `Joined new server: ${guild.name}`);
+  console.log(`[Discord]`,`[${guild.name}]`, `Joined new server: ${guild.name}`);
 
-  let guild = new DiscordGuild(guild);
-  console.log(`[Discord]`,`[New Guild]`, `Created configuration for ${guild.name}`);
+  let thisGuild = new DiscordGuild(guild);
+  console.log(`[Discord]`,`[${guild.name}]`, `Created configuration for ${guild.name}`);
 
   syncServerList(false);
 });
@@ -83,10 +83,14 @@ client.on('message', message => {
 
   let txtPlain = message.content.toString().trim();
   let txtLower = txtPlain.toLowerCase();
-  let prefix = process.env.DISCORD_PREFIX;
 
   // Whitespace or blank message
   if (!txtLower.length) return;
+
+  // Get the guild in which the message was sent
+  let theGuild = new DiscordGuild(message.guild);
+
+  let prefix = theGuild.get("discordPrefix");
 
   // Not a command
   if (txtLower.charAt(0) !== prefix) return;
@@ -98,7 +102,7 @@ client.on('message', message => {
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const command = args.shift().toLowerCase();
 
-    console.log(`[Discord]`, `${command} command received from ${message.member.displayName}. Command Exists: ${client.commands.has(command)}`);
+    console.log(`[Discord]`, `[${message.guild.name}]`, `${command} command received from @${message.member.displayName}. Command Exists: ${client.commands.has(command)}`);
 
     if (!client.commands.has(command)) return;
 

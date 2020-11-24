@@ -1,6 +1,6 @@
 const MiniDb = require('../minidb');
 const Discord = require('discord.js');
-const prefix = process.env.DISCORD_PREFIX;
+const DiscordGuild = require('../discord-guild');
 
 // TODO: per-server prefix
 // TODO: persist change
@@ -11,13 +11,17 @@ class SetPrefix {
   }
 
   static helptext() {
-    return `Changes the bot's prefix. The current prefix is \`\`${prefix}\`\`. Usage: \`\`${prefix}${this.name.toString().trim().toLowerCase()} newprefix\`\`.`;
+    return `Changes the bot's command prefix.`;
   }
 
 	static execute(message, args) {
     if(args[0]) {
+      // Get the guild in which the message was sent
+      let theGuild = new DiscordGuild(message.guild);
+      let prefix = theGuild.get("discordPrefix");
+
       let newPrefix = args[0].toString().trim();
-      process.env.DISCORD_PREFIX = newPrefix;
+      theGuild.put("discordPrefix", newPrefix);
       let msgEmbed = new Discord.MessageEmbed()
         .setColor("#FD6A02")
         .setTitle(`**Twitch Monitor**`)
@@ -25,10 +29,10 @@ class SetPrefix {
     
       message.channel.send(msgEmbed)
           .then((message) => {
-              console.log('[SetPrefix]', `Set bot prefix to ${newPrefix}.`)
+              console.log('[SetPrefix]', `[${message.guild.name}]`, `Set bot prefix to ${newPrefix}.`)
           })
           .catch((err) => {
-              console.log('[SetPrefix]', `Could not send msg to #${message.channel.name}`, err.message);
+              console.log('[SetPrefix]', `[${message.guild.name}]`, `Could not send msg to #${message.channel.name}`, err.message);
           });
     }
 	}

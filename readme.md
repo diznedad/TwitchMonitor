@@ -10,12 +10,14 @@ Much of the code (and like 100% of the installation instructions below) was used
 * Monitors Twitch streamers and posts on discord when they're live.
 * Updates streamer card in the channel with uptime/game changes.
 * Deletes streamer card from channel when streamer goes offline.
-* Discord commands to add/remove/list watched streamers (!addstreamer/!removestreamer/!liststramers).
+* Discord commands to add/remove/list watched streamers (!addstreamer/!removestreamer/!liststreamers).
 
 ## To Do
 * Multi-server support
+* discord-guild.js: Handle null template (throw exception?)
 * Change bot options via commmands (set channel, box art bool, screenshot bool, etc)
 * Bot icon
+* Handle orphanated posts
 
 ## Installation and setup
 

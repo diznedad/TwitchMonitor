@@ -168,6 +168,7 @@ class TwitchMonitor {
             let userDataBase = this._userData[channelName] || { };
             let prevStreamData = this.streamData[channelName] || { };
 
+            // Write the most up to date data to the object
             this.streamData[channelName] = Object.assign({ }, userDataBase, prevStreamData, stream);
             this.streamData[channelName].game = (stream.game_id && this._gameData[stream.game_id]) || null;
 

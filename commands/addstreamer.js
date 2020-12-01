@@ -1,6 +1,14 @@
 const MiniDb = require('../minidb');
 const Discord = require('discord.js');
+const DiscordGuild = require('../discord-guild');
 const prefix = process.env.DISCORD_PREFIX;
+
+/* 
+* Adds a streamer to a server's watch list
+* If the streamer isn't part of the global watch list, add there too.
+* Check to ensure channel is configured first
+*/
+
 
 class AddStreamer {
   static category() {
@@ -12,15 +20,20 @@ class AddStreamer {
   }
 
 	static execute(message, args) {
+    // Get the guild in which the message was sent
+    this._guild = new DiscordGuild(message.guild);
+    this._guildData = this._guild.get('watch-list') || { };
+    let guildWatchedUsers = this._guildData['usernames'] || [ ];
 
-    this._userDb = new MiniDb("twitch-users");
-    this._userData = this._userDb.get("watch-list") || { };
+    // Get global watch list
+    this._globalDb = new MiniDb("twitch-users");
+    this._globalData = this._globalDb.get("watch-list") || { };
+    let globalWatchedUsers = this._globalData['usernames'] || [ ];
 
-    let watchedUsers = this._userData['usernames'] || [ ];
-    let addedUsers = [];
-    let duplicates = [];
 
-    // Loop through all arguments for users to add to the list
+    let result = {"added" : [], "skipped": []};
+
+    // Loop through all users for users to add to the list
     for (const user of args) {
       let userToAdd = user.toString().trim().toLowerCase();
 
@@ -30,29 +43,49 @@ class AddStreamer {
       }
 
       // Whitespace or blank message
-      if (!userToAdd.length) return;
+      if (!userToAdd.length) continue;
 
-      // If they're not already on the list, add them
-      if(watchedUsers.indexOf(userToAdd) === -1) {
-        watchedUsers.push(userToAdd);
-        addedUsers.push(userToAdd);
+      // Skip if name is too long to be a Twitch account.
+      if(userToAdd.length > 30) {
+        result.skipped.push(userToAdd);
+        continue;
+      }
+
+      // If they're not already on the guild list, add them
+      if(guildWatchedUsers.indexOf(userToAdd) === -1) {
+
+        guildWatchedUsers.push(userToAdd);
+        console.log('[Discord-Add]', `[${message.guild.name}]`, `Added ${userToAdd} to guild watch list.`);
+
+        // ...and if they're not already on the GLOBAL list, add them
+        if(globalWatchedUsers.indexOf(userToAdd) === -1) {
+          globalWatchedUsers.push(userToAdd);
+          console.log('[Discord-Add]', `[${message.guild.name}]`, `Added ${userToAdd} to global watch list.`);
+        }
+
+        result.added.push(userToAdd);
       } else {
-        duplicates.push(userToAdd);
+        result.skipped.push(userToAdd);
       }
     }
-      
-    this._userData['usernames'] = watchedUsers;
-    this._userDb.put("watch-list", this._userData);
+    
+    // Update global list
+    this._globalData['usernames'] = globalWatchedUsers;
+    this._globalDb.put("watch-list", this._globalData);
 
-    addedUsers.sort();
-    duplicates.sort();
+    // Update guild list
+    this._guildData['usernames'] = guildWatchedUsers;
+    this._guild.put("watch-list", this._guildData);
+
+    result.added.sort();
+    result.skipped.sort();
 
     let msgEmbed = new Discord.MessageEmbed();
 
     msgEmbed.setColor("#FD6A02");
     msgEmbed.setTitle(`**Twitch Monitor**`);
-    msgEmbed.addField(`Added (${addedUsers.length})`, addedUsers.length > 0 ?addedUsers.join('\n') : "None", true);
-    msgEmbed.addField(`Skipped (${duplicates.length})`, duplicates.length > 0 ?duplicates.join('\n') : "None", true);
+    msgEmbed.addField(`Added (${result.added.length})`, result.added.length > 0 ?result.added.join('\n') : "None", true);
+    msgEmbed.addField(`Skipped (${result.skipped.length})`, result.skipped.length > 0 ?result.skipped.join('\n') : "None", true);
 
     let msgToSend = "";
 
@@ -62,10 +95,10 @@ class AddStreamer {
 
     message.channel.send(msgToSend, msgOptions)
         .then((message) => {
-            console.log('[Discord-Add]', `${addedUsers.length} added. ${duplicates.length} duplicates.`)
+            console.log('[Discord-Add]', `${result.added.length} added. ${result.skipped.length} duplicates.`)
         })
         .catch((err) => {
-            console.log('[Discord-Add]', `Could not send msg to #${message.channel.name}`, err.message);
+            console.log('[Discord-Add]', message.guild.name, `Could not send msg to #${message.channel.name}`, err.message);
         });
 	}
 }

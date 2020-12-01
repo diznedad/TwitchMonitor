@@ -1,9 +1,5 @@
-const MiniDb = require('../minidb');
 const Discord = require('discord.js');
 const DiscordGuild = require('../discord-guild');
-
-// TODO: per-server prefix
-// TODO: persist change
 
 class SetPrefix {
   static category() {
@@ -20,7 +16,7 @@ class SetPrefix {
       let theGuild = new DiscordGuild(message.guild);
       let prefix = theGuild.get("discordPrefix");
 
-      let newPrefix = args[0].toString().trim();
+      let newPrefix = args[0].toString().trim().charAt(0);
       theGuild.put("discordPrefix", newPrefix);
       let msgEmbed = new Discord.MessageEmbed()
         .setColor("#FD6A02")

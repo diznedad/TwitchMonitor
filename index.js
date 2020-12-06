@@ -39,6 +39,7 @@ console.log(`[Discord]`, `Connecting to Discord...`);
 let targetChannels = [];
 
 let syncServerList = (logMembership) => {
+  
   targetChannels = DiscordChannelSync.getChannelList(client, process.env.DISCORD_ANNOUNCE_CHANNEL, logMembership);
 };
 

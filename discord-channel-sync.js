@@ -8,15 +8,15 @@ class DiscordChannelSync {
      * @param {boolean} verbose If true, log guild membership info to stdout (debug / info purposes).
      * @return {Channel[]} List of Discord.js channels
      */
-    static getChannelList(client, channelName, verbose) {
+    static getChannelList(client, channelId, verbose) {
         let nextTargetChannels = [];
 
         client.guilds.cache.forEach((guild) => {
-            let targetChannel = guild.channels.cache.find(g => g.name === channelName);
+            let targetChannel = guild.channels.cache.get(channelId);
 
             if (!targetChannel) {
                 if (verbose) {
-                    console.warn('[Discord]', 'Configuration problem /!\\', `Guild ${guild.name} does not have a #${channelName} channel!`);
+                    console.warn('[Discord]', 'Configuration problem ⚠ ', `Guild ${guild.name} does not have a <#${channelId}> channel!`);
                 }
             } else {
                 let permissions = targetChannel.permissionsFor(guild.me);
@@ -35,9 +35,10 @@ class DiscordChannelSync {
             }
         });
 
+        /*
         if (verbose) {
-            console.log('[Discord]', `Discovered ${nextTargetChannels.length} channels to announce to for ${channelName}.`);
-        }
+            console.log('[Discord]', `Discovered ${nextTargetChannels.length} channels to announce to for ${targetChannel.name}.`);
+        }*/
 
         return nextTargetChannels;
     }

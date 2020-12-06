@@ -9,36 +9,43 @@ const Discord = require('discord.js');
 class DiscordGuild {
   //Expects discord guild object
   constructor(guild) {
-    this.config = new MiniDb('guilds');
+    this._config = new MiniDb('guilds');
+    this._guildDb = this._config.get("guilds") || {};
+
     this.guild = guild;
     console.log(`[Guild]`, `[${guild.name}]`, `New Guild object for ${guild.name}`);
     this.guildConfig = this.checkGuildConfig();
   }
 
   checkGuildConfig() {
-    // Pull guild config. Create config if not exists.
-    let guildConfig = this.config.get(this.guild.id) || null;
+    let guildConfig = this._guildDb;
 
     // Grab the template config to compare / update if required.
-    let templateConfig = this.config.get("template") || null;
+    let templateConfig = this._config.get("template") || null;
 
     // TODO: Handle null template (throw exception?)
 
-    if (guildConfig === null) {
+    if (!guildConfig.hasOwnProperty(this.guild.id)) {
       // Guild config didn't exist. Need to create a new config from the template
       console.log(`[Guild]`, `[${this.guild.name}]`, `Guild config does't exist. Create a new config from template.`);
-      this.config.put(this.guild.id, templateConfig);
+      guildConfig[this.guild.id] = templateConfig;
+      this._config.put("guilds", guildConfig);
       return templateConfig;
 
     } else {
+      // Config does exist
+      console.log(`[Guild]`, `[${this.guild.name}]`, `Guild config exists.`);
+      let thisGuildConfig = guildConfig[this.guild.id];
+
       // Check for any missing props and add them
-      console.log(`[Guild]`, `[${this.guild.name}]`, `Guild config does exist. Check for updated template.`);
-      guildConfig = this.updateGuildConfig(guildConfig, templateConfig);
+      console.log(`[Guild]`, `[${this.guild.name}]`, `Checking for updated template.`);
+      guildConfig[this.guild.id] = this.updateGuildConfig(thisGuildConfig, templateConfig);
+      this._config.put("guilds", guildConfig);
     }
 
     // Config exists and is up to date
     console.log(`[Guild]`, `[${this.guild.name}]`, `Guild config exists and is up to date.`);
-    return guildConfig;
+    return guildConfig[this.guild.id];
   }
 
   updateGuildConfig(guildConfig, templateConfig) {
@@ -55,17 +62,22 @@ class DiscordGuild {
 
   // Get a value from the guild config
   get(property) {
-    let guildConfig = this.config.get(this.guild.id);
+    let guildConfig = this._guildDb[this.guild.id];
     return guildConfig.hasOwnProperty(property) ? guildConfig[property] : null;
   }
 
   // Update guild config
   put(property, value) {
-    let guildConfig = this.config.get(this.guild.id);
-    if(guildConfig.hasOwnProperty(property)) {
-      guildConfig[property] = value;
+    let guildConfig = this._guildDb;
+
+    // Make sure the property we're updating exists
+    if (guildConfig[this.guild.id].hasOwnProperty(property)) {
+      guildConfig[this.guild.id][property] = value;
+
+      // Update the file
+      this._config.put("guilds", guildConfig);
+      console.log(`[Guild]`, `[${this.guild.name}]`, `Updated ${property} to ${value}`);
     }
-    this.config.put(this.guild.id, guildConfig);
   }
 }
 

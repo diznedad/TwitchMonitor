@@ -18,6 +18,7 @@ class SetPrefix {
 
       let newPrefix = args[0].toString().trim().charAt(0);
       theGuild.put("discordPrefix", newPrefix);
+
       let msgEmbed = new Discord.MessageEmbed()
         .setColor("#FD6A02")
         .setTitle(`**Twitch Monitor**`)

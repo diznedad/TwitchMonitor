@@ -1,3 +1,6 @@
+////// NEED TO LOOP DISCORDS?
+
+
 /**
  * Helper class for syncing discord target channels.
  */
@@ -27,7 +30,7 @@ class DiscordChannelSync {
 
                 if (!permissions.has("SEND_MESSAGES")) {
                     if (verbose) {
-                        console.warn('[Discord]', 'Permission problem /!\\', `I do not have SEND_MESSAGES permission on channel #${targetChannel.name} on ${guild.name}: announcement sends will fail.`);
+                        console.warn('[Discord]', 'Permission problem ⚠', `I do not have SEND_MESSAGES permission on channel #${targetChannel.name} on ${guild.name}: announcement sends will fail.`);
                     }
                 }
 
@@ -35,10 +38,10 @@ class DiscordChannelSync {
             }
         });
 
-        /*
+        
         if (verbose) {
-            console.log('[Discord]', `Discovered ${nextTargetChannels.length} channels to announce to for ${targetChannel.name}.`);
-        }*/
+            console.log('[Discord]', `Discovered ${nextTargetChannels.length} announcement channel(s).`);
+        }
 
         return nextTargetChannels;
     }

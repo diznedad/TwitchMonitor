@@ -13,12 +13,17 @@ Much of the code (and like 100% of the installation instructions below) was used
 * Discord commands to add/remove/list watched streamers (!addstreamer/!removestreamer/!liststreamers).
 
 ## To Do
+* Given current changes- actual posting isn't currently working. Need to fix.
 * Multi-server support
 * discord-guild.js: Handle null template (throw exception?)
 * Change bot options via commmands (set channel, box art bool, screenshot bool, etc)
 * Bot icon
 * Handle orphanated posts
 * Remove streamer from global watch list when no servers are following them.
+* Update installation instructions
+
+## Future Functionality
+* Add feature to automatically monitor users in a certain Discord role (pull linked Twitch account)
 
 ## Installation and setup
 

@@ -50,7 +50,8 @@ class TwitchMonitor {
       // Load channel names from db
       this.channelNames = this._watchData['usernames'] || [ ];
 
-      console.log('[TwitchMonitor]', `Polling channels:`, this.channelNames.join(', '));
+      //console.log('[TwitchMonitor]', `Polling channels:`, this.channelNames.join(', '));
+      console.log('[TwitchMonitor]', `Polling ${this.channelNames.length} channels`);
 
       if (!this.channelNames.length) {
           console.warn('[TwitchMonitor]', 'No channels configured');

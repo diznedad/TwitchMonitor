@@ -50,13 +50,11 @@ client.on('ready', () => {
   // Init list of connected servers, and determine which channels we are announcing to
   syncServerList(true);
 
-  if (process.env.TEST_MODE == false) {
-    // Keep our activity in the user list in sync
-    StreamActivity.init(client);
+  // Keep our activity in the user list in sync
+  StreamActivity.init(client);
 
-    // Begin Twitch API polling
-    TwitchMonitor.start();
-  }
+  // Begin Twitch API polling
+  TwitchMonitor.start();
 });
 
 // Added to a new server
@@ -235,21 +233,24 @@ TwitchMonitor.onChannelLiveUpdate((streamData) => {
           }
 
           let msgToSend = msgFormatted;
+          if (process.env.TEST_MODE == false) {
+            let msgOptions = {
+              embed: msgEmbed
+            };
 
-          let msgOptions = {
-            embed: msgEmbed
-          };
+            discordChannel.send(msgToSend, msgOptions)
+              .then((message) => {
+                console.log('[Discord]', `Sent announce msg to #${discordChannel.name} on ${discordChannel.guild.name}`)
 
-          discordChannel.send(msgToSend, msgOptions)
-            .then((message) => {
-              console.log('[Discord]', `Sent announce msg to #${discordChannel.name} on ${discordChannel.guild.name}`)
-
-              messageHistory[liveMsgDiscrim] = message.id;
-              liveMessageDb.put('history', messageHistory);
-            })
-            .catch((err) => {
-              console.log('[Discord]', `Could not send announce msg to #${discordChannel.name} on ${discordChannel.guild.name}:`, err.message);
-            });
+                messageHistory[liveMsgDiscrim] = message.id;
+                liveMessageDb.put('history', messageHistory);
+              })
+              .catch((err) => {
+                console.log('[Discord]', `Could not send announce msg to #${discordChannel.name} on ${discordChannel.guild.name}:`, err.message);
+              });
+          } else {
+            console.log('[DEBUG]', '[Discord]', `[${discordChannel.guild.name}]`, `[${discordChannel.name}]`, `${msgFormatted}`);
+          }
         }
 
         anySent = true;

@@ -14,7 +14,7 @@ class RmStreamer {
     return `Removes a Twitch streamer from the watch list. You can specify multiple space-separated Twitch handles for quick removal. Usage: \`\`${prefix}${this.name.toString().trim().toLowerCase()} twitchhandle1\`\` or \`\`${prefix}${this.name.toString().trim().toLowerCase()} twitchhandle1 twitchhandle2\`\`.`;
   }
   
-	static execute(message, args) {
+	static execute(message, args, guildConfig) {
 
     this._userDb = new MiniDb("twitch-users");
     this._userData = this._userDb.get("watch-list") || { };

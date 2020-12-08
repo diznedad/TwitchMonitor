@@ -19,9 +19,9 @@ class AddStreamer {
     return `Adds a Twitch streamer to the watch list. You can specify multiple space-separated Twitch handles for quick addition. Usage: \`\`${prefix}${this.name.toString().trim().toLowerCase()} twitchhandle1\`\` or \`\`${prefix}${this.name.toString().trim().toLowerCase()} twitchhandle1 twitchhandle2\`\`.`;
   }
 
-	static execute(message, args) {
+	static execute(message, args, guildConfig) {
     // Get the guild in which the message was sent
-    this._guild = new DiscordGuild(message.guild);
+    this._guild = guildConfig;
     this._guildData = this._guild.get('watch-list') || { };
     let guildWatchedUsers = this._guildData['usernames'] || [ ];
 

@@ -39,8 +39,7 @@ console.log(`[Discord]`, `Connecting to Discord...`);
 let targetChannels = [];
 
 let syncServerList = (logMembership) => {
-  
-  targetChannels = DiscordChannelSync.getChannelList(client, process.env.DISCORD_ANNOUNCE_CHANNEL, logMembership);
+  targetChannels = DiscordChannelSync.getChannelList(client, logMembership);
 };
 
 // Connected to Discord
@@ -107,7 +106,7 @@ client.on('message', message => {
 
     // Run the actual command
     try {
-      client.commands.get(command).execute(message, args);
+      client.commands.get(command).execute(message, args, theGuild);
     } catch (e) {
       console.warn('[Discord]', 'Command execution problem:', e);
       message.reply('There was an error trying to execute that command!');
@@ -190,6 +189,9 @@ TwitchMonitor.onChannelLiveUpdate((streamData) => {
 
   for (let i = 0; i < targetChannels.length; i++) {
     const discordChannel = targetChannels[i];
+
+    // TODO: orphan posts
+
     const liveMsgDiscrim = `${discordChannel.guild.id}_${discordChannel.name}_${streamData.id}`;
 
     if (discordChannel) {
@@ -197,7 +199,30 @@ TwitchMonitor.onChannelLiveUpdate((streamData) => {
         // Either send a new message, or update an old one
         let existingMsgId = messageHistory[liveMsgDiscrim] || null;
 
-        if (existingMsgId) {
+        let watchedStreamer = discordChannel['watch-list'].includes(streamData.user_name.toLowerCase());
+
+
+        // If liveMsgDiscrim exists but streamData.user_name is NOT in channel's list:
+        // delete the message, because the streamer was removed by someone.
+        if(existingMsgId && !watchedStreamer) { // Streamer recently removed from list
+          // Fetch existing message
+          discordChannel.messages.fetch(existingMsgId)
+            .then((existingMsg) => {
+              // Delete the message from discord
+              existingMsg.delete();
+              
+              // Clean up DB
+              delete messageHistory[liveMsgDiscrim];
+              liveMessageDb.put('history', messageHistory);
+
+              console.log('[Twitch]', `${streamData.user_name} was removed from ${discordChannel.guild.name} #${discordChannel.name}.`);
+            })
+            .catch((e) => {
+              console.log('[Twitch]', `Could not remove ${streamData.user_name} from ${discordChannel.guild.name} #${discordChannel.name}.`);
+            });
+        } else if (!watchedStreamer) { // Not a streamer this guild cares about.
+          continue;
+        } else if (existingMsgId) { // Message already exists
           // Fetch existing message
           discordChannel.messages.fetch(existingMsgId)
             .then((existingMsg) => {
@@ -225,7 +250,7 @@ TwitchMonitor.onChannelLiveUpdate((streamData) => {
                 // This will cause the message to be posted as new in the next update if needed.
               }
             });
-        } else {
+        } else { // New message needed
           // Sending a new message
           if (!isLive) {
             // We do not post "new" notifications for channels going/being offline
@@ -233,7 +258,7 @@ TwitchMonitor.onChannelLiveUpdate((streamData) => {
           }
 
           let msgToSend = msgFormatted;
-          if (process.env.TEST_MODE == false) {
+          if (process.env.TEST_MODE != true) {
             let msgOptions = {
               embed: msgEmbed
             };
@@ -249,7 +274,7 @@ TwitchMonitor.onChannelLiveUpdate((streamData) => {
                 console.log('[Discord]', `Could not send announce msg to #${discordChannel.name} on ${discordChannel.guild.name}:`, err.message);
               });
           } else {
-            console.log('[DEBUG]', '[Discord]', `[${discordChannel.guild.name}]`, `[${discordChannel.name}]`, `${msgFormatted}`);
+            console.log('[Discord]', `[${discordChannel.guild.name}]`, `[${discordChannel.name}]`, `${msgFormatted}`);
           }
         }
 

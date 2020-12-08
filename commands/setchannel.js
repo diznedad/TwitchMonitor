@@ -17,7 +17,7 @@ class SetChannel {
     return `.`;
   }
 
-	static execute(message, args) {
+	static execute(message, args, guildConfig) {
     // Get the guild in which the message was sent
     this._guild = new DiscordGuild(message.guild);
 

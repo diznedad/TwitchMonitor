@@ -10,10 +10,10 @@ class SetPrefix {
     return `Changes the bot's command prefix.`;
   }
 
-	static execute(message, args) {
+	static execute(message, args, guildConfig) {
     if(args[0]) {
       // Get the guild in which the message was sent
-      let theGuild = new DiscordGuild(message.guild);
+      let theGuild = guildConfig;
       let prefix = theGuild.get("discordPrefix");
 
       let newPrefix = args[0].toString().trim().charAt(0);

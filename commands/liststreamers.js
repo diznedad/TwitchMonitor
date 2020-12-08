@@ -12,7 +12,7 @@ class ListStreamers {
     return `Lists all streamers the bot is currently watching.`;
   }
 
-  static execute(message, args) {
+  static execute(message, args, guildConfig) {
 
     this._userDb = new MiniDb("twitch-users");
     this._userData = this._userDb.get("watch-list") || {};

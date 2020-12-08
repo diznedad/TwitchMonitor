@@ -13,7 +13,6 @@ Much of the code (and like 100% of the installation instructions below) was used
 * Discord commands to add/remove/list watched streamers (!addstreamer/!removestreamer/!liststreamers).
 
 ## To Do
-* Given current changes- actual posting isn't currently working. Need to fix.
 * Multi-server support
 * discord-guild.js: Handle null template (throw exception?)
 * Change bot options via commmands (set channel, box art bool, screenshot bool, etc)

@@ -13,7 +13,7 @@ class Help {
     return `Lists all the bot commands. You can also do \`\`${prefix}${this.name.toString().trim().toLowerCase()} commandname\`\` for more help with a particular command.`;
   }
 
-	static execute(message, args) {
+	static execute(message, args, guildConfig) {
     let commandList = {}
     let msgEmbed = new Discord.MessageEmbed()
       .setColor("#FD6A02")
